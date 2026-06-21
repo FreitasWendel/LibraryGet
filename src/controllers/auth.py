@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for,flash,session 
 from src.models.usuario import Usuario
-
+import functools
 auth_bp = Blueprint('auth', __name__)
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
@@ -15,9 +15,10 @@ def login():
             session['usuario_id'] = usuario.id
             session['usuario_nome'] = usuario.nome
             session['usuario_perfil'] = usuario.perfil
+
             flash('Login realizado com sucesso!', 'success')
             
-            if usuario.perfil == 'admin':
+            if usuario.perfil == 'Administrador':
                 return redirect(url_for('bibliotecario.painel'))
             elif usuario.perfil == 'Professor':
                 return redirect(url_for('professor.painel'))
@@ -33,3 +34,21 @@ def logout():
     session.clear()
     flash('Logout realizado com sucesso!', 'success')
     return redirect(url_for('acervo.lista_livros'))
+
+def login_required(perfil_exigido=None):
+
+    def decorator(view):
+        @functools.wraps(view)
+        def wrapped_view(**kwargs):
+            
+            if not session.get('usuario_id'):
+                flash('Faça login para acessar esta página.', 'warning')
+                return redirect(url_for('auth.login'))
+            
+            if perfil_exigido and session.get('usuario_perfil') != perfil_exigido:
+                flash('Você não tem permissão para acessar esta página.', 'danger')
+                return redirect(url_for('acervo.lista_livros'))
+            
+            return view(**kwargs)
+        return wrapped_view
+    return decorator
