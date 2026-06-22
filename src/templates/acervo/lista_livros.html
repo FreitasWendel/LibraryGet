@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Consultar Disponibilidade de Livros{% endblock %}
+
+{% block content %}
+<div class="container">
+
+    <h2 class="mb-4">📚 Consultar Disponibilidade de Livros</h2>
+
+    {% if livros %}
+        <div class="row">
+            {% for livro in livros %}
+            <div class="col-md-4 mb-3">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ livro.titulo }}</h5>
+
+                        <p class="card-text">
+                            <strong>Autor:</strong> {{ livro.autor }}<br>
+                            <strong>ISBN:</strong> {{ livro.isbn }}<br>
+                            <strong>Categoria:</strong> {{ livro.categoria }}<br>
+                            <strong>Disponíveis:</strong>
+                            {{ livro.quantidade_disponivel }}/{{ livro.quantidade_total }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>Nenhum livro cadastrado no sistema.</p>
+    {% endif %}
+
+</div>
+{% endblock %}

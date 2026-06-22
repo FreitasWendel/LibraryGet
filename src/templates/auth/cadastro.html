@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}Cadastro - LibraryGet{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center" style="min-height: 75vh;">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow border-0 rounded-3">
+            <div class="card-body p-4 p-sm-5">
+                
+                <h3 class="card-title text-center mb-3 fw-bold text-dark">Criar Nova Conta</h3>
+                <p class="text-muted text-center small mb-4">Use seu e-mail institucional para definir seu perfil automaticamente.</p>
+                
+                <form action="{{ url_for('auth.cadastro') }}" method="POST">
+                    
+                    <div class="mb-3">
+                        <label for="nome" class="form-label text-secondary fw-semibold">Nome Completo</label>
+                        <input type="text" class="form-control" id="nome" name="nome" placeholder="Seu nome completo" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="email" class="form-label text-secondary fw-semibold">E-mail Institucional</label>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="exemplo@aluno.com ou exemplo@professor.com" required>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="senha" class="form-label text-secondary fw-semibold">Senha</label>
+                        <input type="password" class="form-control" id="senha" name="senha" placeholder="Mínimo 6 caracteres" minlength="6" required>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-success btn-lg fw-bold shadow-sm">
+                            Finalizar Cadastro
+                        </button>
+                    </div>
+                    
+                </form>
+                
+                <div class="text-center mt-4">
+                    <span class="text-muted small">Já tem uma conta? </span>
+                    <a href="{{ url_for('auth.login') }}" class="small text-decoration-none fw-semibold">Faça Login</a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

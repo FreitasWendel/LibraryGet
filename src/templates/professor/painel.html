@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}Painel do Professor - LibraryGet{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Área do Docente</h2>
+        <span class="badge bg-info text-dark p-2 fs-6">Perfil: Professor</span>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold text-secondary">Livros em Uso Didático</h5>
+                    <h3 class="display-5 fw-bold text-info">{{ dados.livros_retidos }}</h3>
+                    <p class="text-muted">Professores possuem prazo estendido de 30 dias.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold text-secondary">Solicitações de Livros para Grade</h5>
+                    <h3 class="display-5 fw-bold text-dark">{{ dados.artigos_reservados }}</h3>
+                    <p class="text-muted">Materiais reservados para as próximas aulas.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

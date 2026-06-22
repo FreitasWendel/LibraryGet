@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Painel do Aluno - LibraryGet{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Área do Aluno</h2>
+        <span class="badge bg-success p-2 fs-6">Perfil: Aluno</span>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold text-secondary">Meus Empréstimos Atuais</h5>
+                    <h3 class="display-5 fw-bold text-primary">{{ dados.livros_emprestados }}</h3>
+                    <p class="text-muted">Fique atento à data de devolução para evitar multas.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold text-secondary">Situação Financeira / Multas</h5>
+                    <h3 class="display-5 fw-bold {{ 'text-danger' if dados.multas_pendentes > 0 else 'text-success' }}">
+                        R$ {{ "%.2f"|format(dados.multas_pendentes) }}
+                    </h3>
+                    <p class="text-muted">Nenhuma pendência financeira encontrada no sistema.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
