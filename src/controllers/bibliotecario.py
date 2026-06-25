@@ -1,16 +1,38 @@
 from flask import Blueprint, render_template
-from src.controllers.auth import login_required
+from datetime import datetime
 
-bibliotecario_bp = Blueprint('bibliotecario', __name__, url_prefix='/admin')
+from src.controllers.auth import login_required
+from src.models.livro import Livro
+from src.models.emprestimo import Emprestimo
+
+bibliotecario_bp = Blueprint(
+    'bibliotecario',
+    __name__,
+    url_prefix='/admin'
+)
 
 @bibliotecario_bp.route('/painel')
 @login_required('Administrador')
 def painel():
 
+    total_livros = Livro.query.count()
+
+    emprestimos_ativos = Emprestimo.query.filter_by(
+        status='ATIVO'
+    ).count()
+
+    alertas_atraso = Emprestimo.query.filter(
+        Emprestimo.status == 'ATIVO',
+        Emprestimo.data_prevista < datetime.now()
+    ).count()
+
     dados_painel = {
-        'total_livros': 120,
-        'emprestimos_ativos': 15,
-        'alertas_atraso': 3
+        'total_livros': total_livros,
+        'emprestimos_ativos': emprestimos_ativos,
+        'alertas_atraso': alertas_atraso
     }
 
-    return render_template('bibliotecario/painel.html', dados=dados_painel)
+    return render_template(
+        'bibliotecario/painel.html',
+        dados=dados_painel
+    )
