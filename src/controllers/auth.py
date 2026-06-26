@@ -1,11 +1,25 @@
-from flask import Blueprint, render_template, request, redirect, url_for,flash,session 
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session 
 from src.models.usuario import Usuario
 import functools
-
+from functools import wraps
 from src.models import db
 from src.models.usuario import Usuario
 
 auth_bp = Blueprint('auth', __name__)
+
+def login_obrigatorio_perfil(perfil_exigido):
+    def decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            if 'usuario_id' not in session:
+                flash('Faça login para acessar esta página.', 'warning')
+                return redirect(url_for('auth.login'))
+            if session.get('usuario_perfil') != perfil_exigido:
+                flash('Você não tem permissão para acessar esta página.', 'danger')
+                return redirect(url_for('acervo.lista_livros'))
+            return f(*args, **kwargs)
+        return decorated_function
+    return decorator
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
@@ -57,43 +71,37 @@ def login_required(perfil_exigido=None):
         return wrapped_view
     return decorator
 
-@auth_bp.route('/cadastro', methods=['GET', 'POST'])
-def cadastro():
+
+
+@auth_bp.route('/admin/cadastrar-usuario', methods=['GET', 'POST'])
+@login_obrigatorio_perfil('Administrador') 
+def admin_cadastro_usuario():
     if request.method == 'POST':
         nome = request.form.get('nome').strip()
         email = request.form.get('email').strip().lower()
         senha = request.form.get('senha')
+        perfil_escolhido = request.form.get('perfil') 
+
         
         usuario_existente = Usuario.query.filter_by(email=email).first()
         if usuario_existente:
-            flash('Email já cadastrado. Tente outro.', 'danger')
-            return redirect(url_for('auth.cadastro'))
+            flash('Este e-mail já está cadastrado.', 'danger')
+            return redirect(url_for('auth.admin_cadastro_usuario'))
 
-        if '@professor.' in email or email.endswith('@professor.com'):
-            perfil_definido = 'Professor'
-        elif '@aluno.' in email or email.endswith('@aluno.com'):
-            perfil_definido = 'Aluno'
-        else:
-            flash('Email deve conter @professor ou @aluno para definir perfil.', 'danger')
-            return redirect(url_for('auth.cadastro'))
-
-        novo_usuario = Usuario(
-            nome=nome,
-            email=email,
-            perfil=perfil_definido
-        )       
+       
+        novo_usuario = Usuario(nome=nome, email=email, perfil=perfil_escolhido)
         novo_usuario.set_senha(senha)
 
         try:
             db.session.add(novo_usuario)
             db.session.commit()
-            flash('Cadastro realizado com sucesso! Faça login para acessar.', 'success')
-            return redirect(url_for('auth.login'))
-        except Exception as e:
+            flash(f'Usuário {nome} cadastrado com sucesso como {perfil_escolhido}!', 'success')
+            return redirect(url_for('acervo.lista_livros'))
+        except Exception as e:  
             db.session.rollback()
-            flash('Erro ao cadastrar usuário. Tente novamente.', 'danger')
-            return redirect(url_for('auth.cadastro'))
-        
-    return render_template('auth/cadastro.html')
+            flash('Erro ao salvar usuário no banco.', 'danger')
+            
+    return render_template('auth/admin_cadastro.html')
+
 
         
