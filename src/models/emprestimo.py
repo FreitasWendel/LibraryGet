@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from src.models import db
 
 class Emprestimo(db.Model):
