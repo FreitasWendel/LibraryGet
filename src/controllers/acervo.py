@@ -11,6 +11,7 @@ def lista_livros():
     return render_template('acervo/lista_livros.html', livros=livros)
 
 @acervo_bp.route('/livros/novo', methods=['GET', 'POST'])
+
 def novo_livro():
 
     if request.method == 'POST':

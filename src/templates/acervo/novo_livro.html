@@ -1,30 +1,50 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
 {% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h3 class="mb-0">📖 Adicionar Livro ao Acervo</h3>
+                </div>
+                <div class="card-body">
+                    <form action="{{ url_for('acervo.novo_livro') }}" method="POST">
+                        <div class="mb-3">
+                            <label for="titulo" class="form-label">Título do Livro</label>
+                            <input type="text" class="form-control" id="titulo" name="titulo" required>
+                        </div>
 
-<h2>Cadastrar Livro</h2>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="autor" class="form-label">Autor</label>
+                                <input type="text" class="form-control" id="autor" name="autor" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="categoria" class="form-label">Categoria / Gênero</label>
+                                <input type="text" class="form-control" id="categoria" name="categoria" required>
+                            </div>
+                        </div>
 
-<form method="POST">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="isbn" class="form-label">ISBN</label>
+                                <input type="text" class="form-control" id="isbn" name="isbn" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="quantidade" class="form-label">Quantidade de Exemplares</label>
+                                <input type="number" class="form-control" id="quantidade" name="quantidade" min="1" value="1" required>
+                            </div>
+                        </div>
 
-    <label>Título</label><br>
-    <input type="text" name="titulo" required><br><br>
-
-    <label>Autor</label><br>
-    <input type="text" name="autor" required><br><br>
-
-    <label>Categoria</label><br>
-    <input type="text" name="categoria" required><br><br>
-
-    <label>ISBN</label><br>
-    <input type="text" name="isbn" required><br><br>
-
-    <label>Quantidade</label><br>
-    <input type="number" name="quantidade" min="1" required><br><br>
-
-    <button type="submit">
-        Salvar Livro
-    </button>
-
-</form>
-
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{{ url_for('acervo.lista_livros') }}" class="btn btn-secondary">Voltar ao Acervo</a>
+                            <button type="submit" class="btn btn-success">Cadastrar Livro</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

@@ -104,4 +104,16 @@ def admin_cadastro_usuario():
     return render_template('auth/admin_cadastro.html')
 
 
-        
+@auth_bp.route('/painel_redirecionar')
+def redirecionar_painel():
+    if 'usuario_id' not in session:
+        return redirect(url_for('auth.login'))
+    
+    perfil = session.get('usuario_perfil')
+
+    if perfil == 'Administrador':
+        return redirect(url_for('bibliotecario.painel'))
+    elif perfil == 'Professor':
+        return redirect(url_for('professor.painel'))
+    elif perfil == 'Aluno':
+        return redirect(url_for('aluno.painel'))
