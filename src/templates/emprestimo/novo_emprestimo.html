@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">📖 Registrar Saída de Livro</h3>
+                </div>
+                <div class="card-body">
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ category }}">{{ message }}</div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+
+                    <form action="{{ url_for('emprestimo.novo_emprestimo') }}" method="POST">
+                        
+                        <div class="mb-3">
+                            <label for="usuario_id" class="form-label">Selecionar Usuário / Aluno</label>
+                            <select class="form-select" id="usuario_id" name="usuario_id" required>
+                                <option value="" disabled selected>Escolha o leitor...</option>
+                                {% for user in usuarios %}
+                                    <option value="{{ user.id }}">{{ user.nome }} ({{ user.perfil }})</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="livro_id" class="form-label">Selecionar Livro</label>
+                            <select class="form-select" id="livro_id" name="livro_id" required>
+                                <option value="" disabled selected>Escolha o título disponível...</option>
+                                {% for livro in livros %}
+                                    <option value="{{ livro.id }}">{{ livro.titulo }} — Disponível: {{ livro.quantidade_disponivel }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="alert alert-info py-2">
+                            <small>ℹ️ O prazo padrão de devolução automática para este empréstimo é de <strong>14 dias</strong>.</small>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{{ url_for('emprestimo.listar_emprestimos') }}" class="btn btn-secondary">Voltar</a>
+                            <button type="submit" class="btn btn-primary">Confirmar Empréstimo</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
