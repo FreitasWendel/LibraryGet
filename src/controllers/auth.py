@@ -51,7 +51,7 @@ def login():
 def logout():
     session.clear()
     flash('Logout realizado com sucesso!', 'success')
-    return redirect(url_for('acervo.lista_livros'))
+    return redirect(url_for('auth.login'))
 
 def login_required(perfil_exigido=None):
 
