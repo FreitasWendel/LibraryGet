@@ -3,8 +3,8 @@
 {% block content %}
 <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>📚 Acervo de Livros</h2>
-        {% if session.get('perfil') == 'Administrador' %}
+        <h2>📚 Acervo Geral de Livros</h2>
+        {% if session.get('usuario_perfil') == 'Administrador' %}
             <a href="{{ url_for('acervo.novo_livro') }}" class="btn btn-success">➕ Cadastrar Novo Livro</a>
         {% endif %}
     </div>
@@ -28,9 +28,7 @@
                             <th>Categoria</th>
                             <th>ISBN</th>
                             <th>Disponibilidade</th>
-                            {% if session.get('perfil') == 'Administrador' %}
-                                <th>Ações</th>
-                            {% endif %}
+                            <th class="text-center">Ações</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -44,24 +42,33 @@
                                 {% if livro.quantidade_disponivel > 0 %}
                                     <span class="badge bg-success">Disponível ({{ livro.quantidade_disponivel }}/{{ livro.quantidade_total }})</span>
                                 {% else %}
-                                    <span class="badge bg-danger">Esgotado (0/{{ livro.quantidade_total }})</span>
+                                    <span class="badge bg-danger">Esgotado</span>
                                 {% endif %}
                             </td>
                             
-                            {% if session.get('perfil') == 'Administrador' %}
-                            <td>
-                                <div class="btn-group" role="group">
-                                    <a href="{{ url_for('acervo.editar_livro', id=livro.id) }}" class="btn btn-sm btn-warning">Editar</a>
-                                    <form action="{{ url_for('acervo.deletar_livro', id=livro.id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Tem certeza que deseja remover este livro do acervo?');">
-                                        <button type="submit" class="btn btn-sm btn-danger">Excluir</button>
-                                    </form>
-                                </div>
+                            <td class="text-center">
+                                {% if session.get('usuario_perfil') == 'Administrador' %}
+                                    <div class="btn-group" role="group">
+                                        <a href="{{ url_for('acervo.editar_livro', id=livro.id) }}" class="btn btn-sm btn-warning">Editar</a>
+                                        <form action="{{ url_for('acervo.deletar_livro', id=livro.id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Remover este livro?');">
+                                            <button type="submit" class="btn btn-sm btn-danger">Excluir</button>
+                                        </form>
+                                    </div>
+
+                                {% else %}
+                                    {% if livro.quantidade_disponivel > 0 %}
+                                        <form action="{{ url_for('aluno.solicitar_emprestimo', livro_id=livro.id) }}" method="POST" onsubmit="return confirm('Confirmar pedido deste livro?');">
+                                            <button type="submit" class="btn btn-sm btn-primary">📖 Pedir Emprestado</button>
+                                        </form>
+                                    {% else %}
+                                        <button class="btn btn-sm btn-secondary" disabled>Indisponível</button>
+                                    {% endif %}
+                                {% endif %}
                             </td>
-                            {% endif %}
                         </tr>
                         {% else %}
                         <tr>
-                            <td colspan="6" class="text-center text-muted py-4">Nenhum livro cadastrado no acervo ainda.</td>
+                            <td colspan="6" class="text-center text-muted py-4">Nenhum livro encontrado no acervo.</td>
                         </tr>
                         {% endfor %}
                     </tbody>

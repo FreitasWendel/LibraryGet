@@ -1,4 +1,5 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, session 
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session
+from sqlalchemy.util import decorator 
 from src.models.usuario import Usuario
 import functools
 from functools import wraps
@@ -117,3 +118,21 @@ def redirecionar_painel():
         return redirect(url_for('professor.painel'))
     elif perfil == 'Aluno':
         return redirect(url_for('aluno.painel'))
+    
+    def login_required(perfil_exigido=None):
+        def decorator(view):
+            @functools.wraps(view)
+            def wrapped_view(**kwargs):
+            
+                if not session.get('usuario_id'):
+                    flash('Faça login para acessar esta página.', 'warning')
+                    return redirect(url_for('auth.login'))
+            
+            
+                if perfil_exigido and session.get('usuario_perfil') != perfil_exigido:
+                    flash('Você não tem permissão para acessar esta página.', 'danger')
+                    return redirect(url_for('acervo.lista_livros'))
+            
+                return view(**kwargs)
+            return wrapped_view
+        return decorator

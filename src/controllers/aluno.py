@@ -41,12 +41,10 @@ def solicitar_emprestimo(livro_id):
     usuario_id = session.get('usuario_id')
     livro = Livro.query.get_or_404(livro_id)
 
-    
     if livro.quantidade_disponivel <= 0:
         flash(f'Desculpe, o livro "{livro.titulo}" está esgotado no momento.', 'danger')
         return redirect(url_for('aluno.ver_acervo'))
 
-    
     ja_possui = Emprestimo.query.filter_by(
         usuario_id=usuario_id, 
         livro_id=livro_id, 
@@ -58,23 +56,29 @@ def solicitar_emprestimo(livro_id):
         return redirect(url_for('aluno.ver_acervo'))
 
     try:
-    
         livro.quantidade_disponivel -= 1
 
-    
+        
+        prazo_devolucao = datetime.utcnow() + timedelta(days=14)
+
         novo_emprestimo = Emprestimo(
             usuario_id=usuario_id,
             livro_id=livro_id,
-            data_prevista=datetime.utcnow() + timedelta(days=14), 
+            data_prevista=prazo_devolucao, 
             status='ATIVO'
         )
 
         db.session.add(novo_emprestimo)
         db.session.commit()
-        flash(f'Solicitação do livro "{livro.titulo}" realizada! Retire na biblioteca.', 'success')
+        
+        
+        data_formatada = prazo_devolucao.strftime('%d/%m/%Y')
+        flash(f'Sucesso! O livro "{livro.titulo}" foi reservado. Retire na biblioteca. Prazo de devolução: {data_formatada}.', 'success')
+        
+        
+        return redirect(url_for('aluno.painel'))
         
     except Exception as e:
         db.session.rollback()
         flash('Erro ao processar o seu pedido de empréstimo.', 'danger')
-
-    return redirect(url_for('aluno.ver_acervo'))
+        return redirect(url_for('aluno.ver_acervo'))
