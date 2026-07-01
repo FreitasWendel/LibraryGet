@@ -47,24 +47,36 @@
                             </td>
                             
                             <td class="text-center">
-                                {% if session.get('usuario_perfil') == 'Administrador' %}
-                                    <div class="btn-group" role="group">
-                                        <a href="{{ url_for('acervo.editar_livro', id=livro.id) }}" class="btn btn-sm btn-warning">Editar</a>
-                                        <form action="{{ url_for('acervo.deletar_livro', id=livro.id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Remover este livro?');">
-                                            <button type="submit" class="btn btn-sm btn-danger">Excluir</button>
-                                        </form>
-                                    </div>
+    
+    {% if session.get('usuario_perfil') == 'Administrador' %}
+        <div class="btn-group" role="group">
+            <a href="{{ url_for('acervo.editar_livro', id=livro.id) }}" class="btn btn-sm btn-warning">Editar</a>
+            <form action="{{ url_for('acervo.deletar_livro', id=livro.id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Remover este livro?');">
+                <button type="submit" class="btn btn-sm btn-danger">Excluir</button>
+            </form>
+        </div>
 
-                                {% else %}
-                                    {% if livro.quantidade_disponivel > 0 %}
-                                        <form action="{{ url_for('aluno.solicitar_emprestimo', livro_id=livro.id) }}" method="POST" onsubmit="return confirm('Confirmar pedido deste livro?');">
-                                            <button type="submit" class="btn btn-sm btn-primary">📖 Pedir Emprestado</button>
-                                        </form>
-                                    {% else %}
-                                        <button class="btn btn-sm btn-secondary" disabled>Indisponível</button>
-                                    {% endif %}
-                                {% endif %}
-                            </td>
+    
+    {% elif session.get('usuario_perfil') == 'Professor' %}
+        {% if livro.quantidade_disponivel > 0 %}
+            <form action="{{ url_for('professor.solicitar_emprestimo', livro_id=livro.id) }}" method="POST" onsubmit="return confirm('Confirmar pedido deste livro como Professor?');">
+                <button type="submit" class="btn btn-sm btn-warning text-dark"> Pegar Emprestado </button>
+            </form>
+        {% else %}
+            <button class="btn btn-sm btn-secondary" disabled>Indisponível</button>
+        {% endif %}
+
+    
+    {% else %}
+        {% if livro.quantidade_disponivel > 0 %}
+            <form action="{{ url_for('aluno.solicitar_emprestimo', livro_id=livro.id) }}" method="POST" onsubmit="return confirm('Confirmar pedido deste livro?');">
+                <button type="submit" class="btn btn-sm btn-primary"> Pegar Emprestado</button>
+            </form>
+        {% else %}
+            <button class="btn btn-sm btn-secondary" disabled>Indisponível</button>
+        {% endif %}
+    {% endif %}
+</td>
                         </tr>
                         {% else %}
                         <tr>

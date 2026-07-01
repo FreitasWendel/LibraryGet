@@ -59,7 +59,7 @@ def solicitar_emprestimo(livro_id):
         livro.quantidade_disponivel -= 1
 
         
-        prazo_devolucao = datetime.utcnow() + timedelta(days=14)
+        prazo_devolucao = datetime.utcnow() + timedelta(days=7)
 
         novo_emprestimo = Emprestimo(
             usuario_id=usuario_id,
