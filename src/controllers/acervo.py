@@ -26,7 +26,7 @@ def lista_livros():
     usuarios = []
     if session.get('usuario_perfil') == 'Administrador':
         usuarios = Usuario.query.filter(Usuario.perfil != 'Administrador').all()
-    return render_template('acervo/lista_livros.html', livros=livros)
+    return render_template('acervo/lista_livros.html', livros=livros, usuarios=usuarios)
 
 @acervo_bp.route('/livros/novo', methods=['GET', 'POST'])
 @login_required('Administrador')
