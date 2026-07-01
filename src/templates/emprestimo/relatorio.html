@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}Meu Histórico de Empréstimos - LibraryGet{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>📖 Meu Histórico de Empréstimos</h2>
+        <a href="{% if session.get('usuario_perfil') == 'Professor' %}{{ url_for('professor.painel') }}{% else %}{{ url_for('aluno.painel') }}{% endif %}" class="btn btn-secondary">
+            &larr; Voltar para o Painel
+        </a>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Livro</th>
+                            <th>Data de Retirada</th>
+                            <th>Prazo para Devolução</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for emprestimo in emprestimos %}
+                        <tr>
+                            <td>
+                                <strong>{{ emprestimo.livro.titulo }}</strong>
+                                <br><small class="text-muted">Autor: {{ emprestimo.livro.autor }}</small>
+                            </td>
+                            <td>{{ emprestimo.data_emprestimo.strftime('%d/%m/%Y') }}</td>
+                            <td>{{ emprestimo.data_prevista.strftime('%d/%m/%Y') }}</td>
+                            <td>
+                                {% if emprestimo.status == 'ATIVO' %}
+                                    <span class="badge bg-primary">Em posse (Ativo)</span>
+                                {% elif emprestimo.status == 'DEVOLVIDO' %}
+                                    <span class="badge bg-success">Devolvido</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Atrasado</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="4" class="text-center text-muted py-4">Você ainda não realizou nenhum empréstimo.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

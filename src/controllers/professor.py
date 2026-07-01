@@ -72,3 +72,11 @@ def solicitar_emprestimo(livro_id):
         db.session.rollback()
         flash('Erro ao processar o pedido de empréstimo do professor.', 'danger')
         return redirect(url_for('acervo.lista_livros'))
+    
+@professor_bp.route('/historico')
+@login_required('Professor')
+def historico_professor():
+    usuario_id = session.get('usuario_id')
+    meus_emprestimos = Emprestimo.query.filter_by(usuario_id=usuario_id).order_by(Emprestimo.data_emprestimo.desc()).all()
+    
+    return render_template('emprestimo/relatorio.html', emprestimos=meus_emprestimos)

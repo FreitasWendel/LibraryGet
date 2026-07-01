@@ -9,12 +9,20 @@
         
         <div class="d-flex align-items-center gap-2 flex-wrap">
             <a href="{{ url_for('acervo.lista_livros') }}" class="btn btn-primary d-flex align-items-center gap-1 shadow-sm">
-                <span>📖 Solicitar Empréstimo</span>
+                <span> Solicitar Empréstimo</span>
             </a>
             
             <span class="badge bg-success p-2 fs-6">Perfil: Aluno</span>
         </div>
     </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} mb-4">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
 
     <div class="row g-4">
         <div class="col-md-6">
@@ -25,9 +33,15 @@
                         <h3 class="display-5 fw-bold text-primary">{{ dados.livros_emprestados }}</h3>
                         <p class="text-muted">Fique atento à data de devolução para evitar multas.</p>
                     </div>
-                    <a href="{{ url_for('acervo.lista_livros') }}" class="text-primary text-decoration-none small mt-3 fw-bold">
-                        Ver Livros Disponíveis &rarr;
-                    </a>
+                    
+                    <div class="d-flex flex-column gap-2 mt-3">
+                        <a href="{{ url_for('acervo.lista_livros') }}" class="text-primary text-decoration-none small fw-bold">
+                            Ver Livros Disponíveis &rarr;
+                        </a>
+                        <a href="{{ url_for('aluno.historico_aluno') }}" class="text-secondary text-decoration-none small fw-bold">
+                             Ver Meu Histórico de Empréstimos &rarr;
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
