@@ -6,6 +6,7 @@ from src.models import db
 from src.models.livro import Livro
 from src.models.usuario import Usuario
 from src.models.emprestimo import Emprestimo
+from sqlalchemy import func
 
 bibliotecario_bp = Blueprint(
     'bibliotecario',
@@ -131,3 +132,34 @@ def registrar_devolucao(emprestimo_id):
         flash('Erro interno ao tentar registrar a devolução no banco de dados.', 'danger')
         
     return redirect(url_for('bibliotecario.gerenciar_emprestimos'))
+
+@bibliotecario_bp.route('/relatorios')
+@login_required('Administrador')
+def relatorio_estatistico():
+    try:
+       
+        livros_por_categoria = db.session.query(
+            Livro.categoria,
+            func.count(Livro.id).label('total')
+        ).group_by(Livro.categoria).all()
+
+        
+        total_ativos = Emprestimo.query.filter_by(status='ATIVO').count()
+
+       
+        usuarios_atrasados = Emprestimo.query.filter(
+            Emprestimo.status == 'ATIVO',
+            Emprestimo.data_prevista < datetime.utcnow()
+        ).order_by(Emprestimo.data_prevista.asc()).all()
+
+        return render_template(
+            'bibliotecario/relatorio.html',
+            categorias=livros_por_categoria,
+            total_ativos=total_ativos,
+            atrasados=usuarios_atrasados,
+            datetime=datetime 
+        )
+        
+    except Exception as e:
+        flash('Erro ao processar dados estatísticos do relatório.', 'danger')
+        return redirect(url_for('bibliotecario.painel'))

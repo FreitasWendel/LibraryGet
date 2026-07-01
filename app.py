@@ -5,7 +5,7 @@ app = create_app()
 
 @app.route('/')
 def index():
-    return redirect(url_for('auth.login'))
+    return redirect(url_for('acervo.home'))
 
 if __name__ == '__main__':
     app.run(debug=True)

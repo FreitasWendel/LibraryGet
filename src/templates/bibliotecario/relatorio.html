@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% block title %}Relatório Estatístico - LibraryGet{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2> Painel de Relatórios Estatísticos </h2>
+        <a href="{{ url_for('bibliotecario.painel') }}" class="btn btn-secondary">
+            &larr; Voltar ao Painel
+        </a>
+    </div>
+
+    <div class="row mb-5">
+        <div class="col-md-4">
+            <div class="card shadow-sm border-start border-primary border-4">
+                <div class="card-body">
+                    <h6 class="text-muted text-uppercase small fw-bold">Empréstimos em Circulação</h6>
+                    <h3 class="display-6 fw-bold text-primary">{{ total_ativos }}</h3>
+                    <p class="text-muted small mb-0">Livros que estão fisicamente fora da instituição.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-5">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="card-title mb-0"> Acervo por Categoria</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Categoria</th>
+                                    <th class="text-center">Qtd. Títulos</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for cat, total in categorias %}
+                                <tr>
+                                    <td><span class="badge bg-secondary">{{ cat if cat else 'Não Informada' }}</span></td>
+                                    <td class="text-center fw-bold">{{ total }}</td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="2" class="text-center text-muted">Nenhum livro cadastrado.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-7">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="card-title mb-0"> Usuários em Inadimplência (Atrasos)</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Usuário / Leitor</th>
+                                    <th>Livro Pendente</th>
+                                    <th class="text-center">Prazo Limite</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for emp in atrasados %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ emp.usuario.nome }}</strong>
+                                        <br><small class="text-muted">{{ emp.usuario.perfil }} | ID: {{ emp.usuario_id }}</small>
+                                    </td>
+                                    <td>
+                                        <span class="d-inline-block text-truncate" style="max-width: 180px;">
+                                            {{ emp.livro.titulo }}
+                                        </span>
+                                    </td>
+                                    <td class="text-center text-danger fw-bold">
+                                        {{ emp.data_prevista.strftime('%d/%m/%Y') }}
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="3" class="text-center text-success py-4">
+                                         Excelente! Nenhum usuário possui livros em atraso hoje.
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -8,7 +8,7 @@ acervo_bp = Blueprint('acervo', __name__, url_prefix='/acervo')
 
 @acervo_bp.route('/')
 def home():
-    # Se o usuário já estiver logado, podemos mandar ele direto para o painel dele
+    
     if 'usuario_perfil' in session:
         if session['usuario_perfil'] == 'Administrador':
             return redirect(url_for('bibliotecario.painel'))

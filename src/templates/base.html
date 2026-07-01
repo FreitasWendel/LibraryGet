@@ -35,9 +35,7 @@
                                 ({{ session.get('usuario_perfil') }})
                             </span>
                         </li>
-                        <li class="nav-item">
-                            <a class="btn btn-outline-light btn-sm" href="{{ url_for('auth.logout') }}">Sair</a>
-                        </li>
+                        
                     {% else %}
                         <li class="nav-item">
                             <a class="btn btn-primary btn-sm" href="{{ url_for('auth.login') }}">Entrar (Login)</a>

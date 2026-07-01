@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Solicitar Compra de Livro{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2> Sugerir Aquisição de Novo Livro</h2>
+                <a href="{{ url_for('professor.painel') }}" class="btn btn-secondary">&larr; Voltar</a>
+            </div>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <p class="text-muted">
+                        Utilize este espaço para recomendar livros que ainda não fazem parte do acervo geral da biblioteca. 
+                        Sua indicação será avaliada pelo Bibliotecário.
+                    </p>
+                    
+                    <form action="{{ url_for('professor.solicitar_compra') }}" method="POST">
+                        <div class="mb-3">
+                            <label for="titulo" class="form-label fw-bold">Título do Livro *</label>
+                            <input type="text" class="form-control" id="titulo" name="titulo" required placeholder="Ex: Clean Code / Código Limpo">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="autor" class="form-label fw-bold">Autor da Obra *</label>
+                            <input type="text" class="form-control" id="autor" name="autor" required placeholder="Ex: Robert C. Martin">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="justificativa" class="form-label fw-bold">Justificativa Acadêmica *</label>
+                            <textarea class="form-control" id="justificativa" name="justificativa" rows="5" required placeholder="Explique brevemente a importância deste livro para as suas aulas ou projetos de pesquisa..."></textarea>
+                        </div>
+
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-success btn-lg">Enviar Sugestão de Compra</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

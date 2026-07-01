@@ -1,9 +1,10 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, session
+from flask import Blueprint, render_template, redirect, url_for, flash, session, request
 from datetime import datetime, timedelta
 from src.models import db
 from src.models.livro import Livro
 from src.models.emprestimo import Emprestimo
 from src.controllers.auth import login_required
+from src.models.sugestao import SugestaoLivro
 
 professor_bp = Blueprint('professor', __name__, url_prefix='/professor')
 
@@ -80,3 +81,36 @@ def historico_professor():
     meus_emprestimos = Emprestimo.query.filter_by(usuario_id=usuario_id).order_by(Emprestimo.data_emprestimo.desc()).all()
     
     return render_template('emprestimo/relatorio.html', emprestimos=meus_emprestimos)
+
+@professor_bp.route('/solicitar-compra', methods=['GET', 'POST'])
+@login_required('Professor')
+def solicitar_compra():
+    if request.method == 'POST':
+        titulo = request.form.get('titulo')
+        autor = request.form.get('autor')
+        justificativa = request.form.get('justificativa')
+        usuario_id = session.get('usuario_id')
+
+        if not titulo or not autor or not justificativa:
+            flash('Por favor, preencha todos os campos da solicitação.', 'danger')
+            return redirect(url_for('professor.solicitar_compra'))
+
+        try:
+            nova_sugestao = SugestaoLivro(
+                titulo=titulo,
+                autor=autor,
+                justificativa=justificativa,
+                usuario_id=usuario_id,
+                status='PENDENTE'
+            )
+            db.session.add(nova_sugestao)
+            db.session.commit()
+            flash(f'Solicitação de compra do livro "{titulo}" enviada com sucesso!', 'success')
+            return redirect(url_for('professor.painel'))
+            
+        except Exception as e:
+            db.session.rollback()
+            flash('Erro ao registrar solicitação de compra.', 'danger')
+            return redirect(url_for('professor.painel'))
+
+    return render_template('professor/solicitar_compra.html')
