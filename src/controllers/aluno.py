@@ -31,7 +31,7 @@ def painel():
 def ver_acervo():
     
     livros = Livro.query.all()
-    return render_template('aluno/acervo_aluno.html', livros=livros)
+    return render_template('acervo/lista_livros.html', livros=livros)
 
 
 
@@ -43,7 +43,7 @@ def solicitar_emprestimo(livro_id):
 
     if livro.quantidade_disponivel <= 0:
         flash(f'Desculpe, o livro "{livro.titulo}" está esgotado no momento.', 'danger')
-        return redirect(url_for('aluno.ver_acervo'))
+        return redirect(url_for('acervo.lista_livros'))
 
     ja_possui = Emprestimo.query.filter_by(
         usuario_id=usuario_id, 
@@ -53,7 +53,7 @@ def solicitar_emprestimo(livro_id):
     
     if ja_possui:
         flash(f'Você já possui um empréstimo ativo do livro "{livro.titulo}".', 'warning')
-        return redirect(url_for('aluno.ver_acervo'))
+        return redirect(url_for('acervo.lista_livros'))
 
     try:
         livro.quantidade_disponivel -= 1
@@ -81,4 +81,4 @@ def solicitar_emprestimo(livro_id):
     except Exception as e:
         db.session.rollback()
         flash('Erro ao processar o seu pedido de empréstimo.', 'danger')
-        return redirect(url_for('aluno.ver_acervo'))
+        return redirect(url_for('acervo.lista_livros'))
