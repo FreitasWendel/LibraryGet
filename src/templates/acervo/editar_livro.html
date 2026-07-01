@@ -6,7 +6,7 @@
         <div class="col-md-8">
             <div class="card shadow-sm">
                 <div class="card-header bg-warning text-dark">
-                    <h3 class="mb-0">📋 Editar Livro: {{ livro.titulo }}</h3>
+                    <h3 class="mb-0"> Editar Livro: {{ livro.titulo }}</h3>
                 </div>
                 <div class="card-body">
                     
@@ -41,16 +41,25 @@
                                 <label for="isbn" class="form-label">ISBN</label>
                                 <input type="text" class="form-control" id="isbn" name="isbn" value="{{ livro.isbn }}" required>
                             </div>
+                            
+   
+    
+    <div class="col-md-6">
+        <label for="editora" class="form-label ">Editora</label>
+        <input type="text" class="form-control" id="editora" name="editora"  value="{{ livro.editora if livro else '' }}">
+    </div>
+
                             <div class="col-md-6 mb-3">
                                 <label for="quantidade" class="form-label">Quantidade Total em Estoque</label>
                                 <input type="number" class="form-control" id="quantidade" name="quantidade" value="{{ livro.quantidade_total }}" min="0" required>
-                                <div class="form-text text-muted">A quantidade disponível será recalculada automaticamente com base na mudança do total.</div>
+                                
                             </div>
                         </div>
 
                         <div class="d-flex justify-content-between mt-4">
                             <a href="{{ url_for('acervo.lista_livros') }}" class="btn btn-secondary">Cancelar</a>
                             <button type="submit" class="btn btn-warning">Salvar Alterações</button>
+                            
                         </div>
 
                     </form>

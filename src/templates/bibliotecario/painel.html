@@ -13,9 +13,12 @@
                 <span> Novo Usuário</span>
             </a>
 
-            <a href="{{ url_for('acervo.novo_livro') }}" class="btn btn-success d-flex align-items-center gap-1 shadow-sm mb-3">
+            <a href="{{ url_for('acervo.novo_livro') }}" class="btn btn-success d-flex align-items-center gap-1 shadow-sm mb-3 ">
                 <span>Novo Livro</span>
             </a>
+            <a href="{{ url_for('bibliotecario.gerenciar_emprestimos') }}" class="btn btn-sm btn-primary mb-3">
+     Acessar Fila de Devoluções
+</a>
         </div>
     </div>
     <div class="row g-4 mb-5">
@@ -35,6 +38,8 @@
                 <div class="card-body d-flex flex-column justify-content-between">
                     <div>
                         <h6 class="card-title text-uppercase opacity-75">Empréstimos Ativos</h6>
+                        
+
                         <h2 class="fw-bold">{{ dados.emprestimos_ativos }}</h2>
                     </div>
                     <a href="{{ url_for('emprestimo.listar_emprestimos')}}" class="text-white text-decoration-none mt-3 small">Ver Empréstimos &rarr;</a>

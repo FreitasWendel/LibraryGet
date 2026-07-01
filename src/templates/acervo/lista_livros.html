@@ -3,9 +3,9 @@
 {% block content %}
 <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>📚 Acervo Geral de Livros</h2>
+        <h2> Acervo Geral de Livros</h2>
         {% if session.get('usuario_perfil') == 'Administrador' %}
-            <a href="{{ url_for('acervo.novo_livro') }}" class="btn btn-success">➕ Cadastrar Novo Livro</a>
+            <a href="{{ url_for('acervo.novo_livro') }}" class="btn btn-success"> Cadastrar Novo Livro</a>
         {% endif %}
     </div>
 
@@ -45,38 +45,96 @@
                                     <span class="badge bg-danger">Esgotado</span>
                                 {% endif %}
                             </td>
-                            
                             <td class="text-center">
-    
-    {% if session.get('usuario_perfil') == 'Administrador' %}
-        <div class="btn-group" role="group">
-            <a href="{{ url_for('acervo.editar_livro', id=livro.id) }}" class="btn btn-sm btn-warning">Editar</a>
-            <form action="{{ url_for('acervo.deletar_livro', id=livro.id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Remover este livro?');">
-                <button type="submit" class="btn btn-sm btn-danger">Excluir</button>
-            </form>
+    <div class="d-flex justify-content-center align-items-center gap-2">
+        
+        <button type="button" class="btn btn-sm btn-info text-white" data-bs-toggle="modal" data-bs-target="#modalDetalhes{{ livro.id }}">
+            Ver Dados
+        </button>
+
+        {% if session.get('usuario_perfil') == 'Administrador' %}
+            <div class="btn-group" role="group">
+                <a href="{{ url_for('acervo.editar_livro', id=livro.id) }}" class="btn btn-sm btn-warning">Editar</a>
+                <form action="{{ url_for('acervo.deletar_livro', id=livro.id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Remover este livro?');">
+                    <button type="submit" class="btn btn-sm btn-danger">Excluir</button>
+                </form>
+            </div>
+
+            {% if livro.quantidade_disponivel > 0 %}
+                <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#modalEmprestimo{{ livro.id }}">
+                     Emprestar
+                </button>
+            {% else %}
+                <button class="btn btn-sm btn-secondary" disabled>Esgotado</button>
+            {% endif %}
+
+            <div class="modal fade" id="modalEmprestimo{{ livro.id }}" ...> ... </div>
+        {% endif %}
+    </div>
+
+    <div class="modal fade" id="modalDetalhes{{ livro.id }}" tabindex="-1" aria-labelledby="modalDetalhesLabel{{ livro.id }}" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered text-start">
+            <div class="modal-content">
+                <div class="modal-header bg-dark text-white">
+                    <h5 class="modal-title" id="modalDetalhesLabel{{ livro.id }}"> Ficha Técnica do Livro</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h4 class="text-primary mb-3 fw-bold">{{ livro.titulo }}</h4>
+                    
+                    <table class="table table-sm table-borderless fs-6">
+                        <tbody>
+                            <tr>
+                                <td class="fw-bold text-secondary" style="width: 35%;">Autor:</td>
+                                <td>{{ livro.autor }}</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold text-secondary">Categoria:</td>
+                                <td><span class="badge bg-secondary">{{ livro.categoria }}</span></td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold text-secondary">ISBN:</td>
+                                <td><code class="text-dark">{{ livro.isbn }}</code></td>
+                            </tr>
+                            <tr>
+    <td class="fw-bold text-secondary">Editora:</td>
+    <td>{{ livro.editora if livro.editora else 'Não informada' }}</td>
+</tr>
+                            <tr>
+                                <td class="fw-bold text-secondary">ID no Sistema:</td>
+                                <td>{{ livro.id }}</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold text-secondary">Estoque Total:</td>
+                                <td>{{ livro.quantidade_total }} unidades</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold text-secondary">Disponível:</td>
+                                <td>
+                                    {% if livro.quantidade_disponivel > 0 %}
+                                        <span class="text-success fw-bold">{{ livro.quantidade_disponivel }} unidades</span>
+                                    {% else %}
+                                        <span class="text-danger fw-bold">Esgotado em prateleira</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% if livro.ano_publicacao %}
+                            <tr>
+                                <td class="fw-bold text-secondary">Ano:</td>
+                                <td>{{ livro.ano_publicacao }}</td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
         </div>
-
-    
-    {% elif session.get('usuario_perfil') == 'Professor' %}
-        {% if livro.quantidade_disponivel > 0 %}
-            <form action="{{ url_for('professor.solicitar_emprestimo', livro_id=livro.id) }}" method="POST" onsubmit="return confirm('Confirmar pedido deste livro como Professor?');">
-                <button type="submit" class="btn btn-sm btn-warning text-dark"> Pegar Emprestado </button>
-            </form>
-        {% else %}
-            <button class="btn btn-sm btn-secondary" disabled>Indisponível</button>
-        {% endif %}
-
-    
-    {% else %}
-        {% if livro.quantidade_disponivel > 0 %}
-            <form action="{{ url_for('aluno.solicitar_emprestimo', livro_id=livro.id) }}" method="POST" onsubmit="return confirm('Confirmar pedido deste livro?');">
-                <button type="submit" class="btn btn-sm btn-primary"> Pegar Emprestado</button>
-            </form>
-        {% else %}
-            <button class="btn btn-sm btn-secondary" disabled>Indisponível</button>
-        {% endif %}
-    {% endif %}
+    </div>
 </td>
+                           
                         </tr>
                         {% else %}
                         <tr>

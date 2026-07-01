@@ -6,7 +6,7 @@
         <div class="col-md-8">
             <div class="card shadow">
                 <div class="card-header bg-success text-white">
-                    <h3 class="mb-0">📖 Adicionar Livro ao Acervo</h3>
+                    <h3 class="mb-0"> Adicionar Livro ao Acervo</h3>
                 </div>
                 <div class="card-body">
                     <form action="{{ url_for('acervo.novo_livro') }}" method="POST">
@@ -31,6 +31,13 @@
                                 <label for="isbn" class="form-label">ISBN</label>
                                 <input type="text" class="form-control" id="isbn" name="isbn" required>
                             </div>
+                            
+    
+    <div class="col-md-6">
+        <label for="editora" class="form-label ">Editora</label>
+        <input type="text" class="form-control" id="editora" name="editora"  value="{{ livro.editora if livro else '' }}">
+    </div>
+
                             <div class="col-md-6 mb-3">
                                 <label for="quantidade" class="form-label">Quantidade de Exemplares</label>
                                 <input type="number" class="form-control" id="quantidade" name="quantidade" min="1" value="1" required>

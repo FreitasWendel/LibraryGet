@@ -46,6 +46,35 @@
                 </ul>
             </div>
         </div>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="{{ url_for('acervo.home') }}">📚 LibraryGet</a>
+        
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('acervo.lista_livros') }}">Ver Catálogo</a>
+                </li>
+            </ul>
+            
+            <div class="d-flex align-items-center gap-2">
+                {% if session.get('usuario_perfil') %}
+                    {% if session['usuario_perfil'] == 'Administrador' %}
+                        <a href="{{ url_for('bibliotecario.painel') }}" class="btn btn-sm btn-outline-light">Meu Painel (Admin)</a>
+                    {% elif session['usuario_perfil'] == 'Professor' %}
+                        <a href="{{ url_for('professor.painel') }}" class="btn btn-sm btn-outline-light">Meu Painel (Docente)</a>
+                    {% else %}
+                        <a href="{{ url_for('aluno.painel') }}" class="btn btn-sm btn-outline-light">Meu Painel</a>
+                    {% endif %}
+                    
+                    <a href="{{ url_for('auth.logout') }}" class="btn btn-sm btn-danger">Sair</a>
+                {% else %}
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-sm btn-primary">Área Restrita / Login</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</nav>
     </nav>
 
     <main class="container my-4">

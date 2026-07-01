@@ -11,7 +11,7 @@ class Livro(db.Model):
 
     categoria = db.Column(db.String(100), nullable=False)
 
-    editora = db.Column(db.String(100))
+    editora = db.Column(db.String(100), nullable=True)
 
     ano = db.Column(db.Integer)
 
