@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}Login - LibraryGet{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center" style="min-height: 70vh;">
+    
+    <div class="col-md-6 d-none d-md-flex justify-content-center align-items-center mb-4 mb-md-0">
+        <img src="{{ url_for('static', filename='css/animacao.svg') }}" alt="Ilustração LibraryGet" class="img-fluid" style="max-width: 80%;">
+    </div>
+
+    <div class="col-12 col-md-6 col-lg-5">
+        <div class="card shadow border-0 rounded-3">
+            <div class="card-body p-4 p-sm-5">
+                
+                <h3 class="card-title text-center mb-4 fw-bold text-dark">Entrar no Sistema</h3>
+                
+                <form action="{{ url_for('auth.login') }}" method="POST">
+                    
+                    <div class="mb-3">
+                        <label for="email" class="form-label text-secondary fw-semibold">E-mail Institucional</label>
+                        <input type="email" class="form-control" id="email" name="email" 
+                               placeholder="nome@universidade.com" required autofocus>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="senha" class="form-label text-secondary fw-semibold">Senha</label>
+                        <input type="password" class="form-control" id="senha" name="senha" 
+                               placeholder="Sua senha secreta" required>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg fw-bold shadow-sm">
+                            Entrar
+                        </button>
+                    </div>
+                    
+                </form>
+                
+            </div>
+        </div>
+        
+        <div class="text-center mt-3 text-muted">
+            <small>Acesso restrito para Alunos, Professores e Bibliotecários.</small>
+        </div>
+    </div>
+</div>
+{% endblock %}
